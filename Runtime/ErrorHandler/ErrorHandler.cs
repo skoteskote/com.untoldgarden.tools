@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 // Handler of in-app error and warning messages
-// Will 
+// Create two files called ErrorMessages and WarningMessages and add in a folder called UI in the Resources folder
+// Will create two panels for each type of message, to use a custom panel make them and name them ErrorPanel and WarningPanel
 
 namespace UntoldGarden
 {
@@ -26,7 +25,8 @@ namespace UntoldGarden
         private string baseError = "Sorry, an unknown error occurred.";
         private string baseWarning = "Warning! Strong winds ahead.";
 
-        private bool reload = false;
+        private bool hasErrorCsv = false;
+        private bool hasWarningCsv = false;
 
         void Awake()
         {
@@ -82,45 +82,39 @@ namespace UntoldGarden
             {
                 errorMessages = Resources.Load<TextAsset>("UI/ErrorMessages");
                 errorMsg = errorMessages.text.Split(new char[] { '\n' });       //Splits the error messages csv into array
+                hasErrorCsv = true;
             }
             catch
             {
-                string filePath = getPath("ErrorMessages.csv");
-                StreamWriter outStream = File.CreateText(filePath);   // Creates an error messages csv in case there is none
-                outStream.Close();
-                reload = true;
+                print("No error messages file. Make a csv and put in the Resources folder.");
             }
 
             try
             {
                 warningMessages = Resources.Load<TextAsset>("UI/WarningMessages");
                 warningMsg = warningMessages.text.Split(new char[] { '\n' });   //Splits the error messages csv into array
+                hasWarningCsv = true;
             }
             catch
             {
-                string filePath = getPath("WarningMessages.csv");
-                StreamWriter outStream = File.CreateText(filePath);   // Creates a warning messages csv in case there is none
-                outStream.Close();
-                reload = true;
+                print("No warning messages file. Make a csv and put in the Resources folder.");
             }
-            if (reload) { ExitPlayMode(); }
-            print("path:" + getPath(""));
-        }
-
-        private void ExitPlayMode()
-        {
-            Debug.LogError("Error Handler exited playmode to create error and warning message csv sheets. This will only happen once per project.");
-            UnityEditor.EditorApplication.isPlaying = false;
         }
 
         public void Error(int errorNr, string errorInfo = "")                   //Error message is displayed by calling the corresponding error array item
         {
-           
-            if (errorNr < errorMsg.Length)
+            if (hasErrorCsv)
             {
-                errorText.text = errorMsg[errorNr] + errorInfo;                 //Only change error text if errorNr is within errorMsg array bounds
-            } 
-            else if(errorInfo != "")
+                if (errorNr < errorMsg.Length)
+                {
+                    errorText.text = errorMsg[errorNr] + errorInfo;                 //Only change error text if errorNr is within errorMsg array bounds
+                }
+                else if (errorInfo != "")
+                {
+                    errorText.text = errorInfo;                                     //Otherwise set the text to the errorInfo string
+                }
+            }
+            else if (errorInfo != "")
             {
                 errorText.text = errorInfo;                                     //Otherwise set the text to the errorInfo string
             }                                
@@ -129,10 +123,17 @@ namespace UntoldGarden
 
         public void Warning(int warnNr, string warningInfo = "")                //Error message is displayed by calling the corresponding error array item
         {
-            if (warnNr < warningMsg.Length)
+            if (hasWarningCsv)
             {
-                warningText.text = warningMsg[warnNr] + warningInfo;            //Only change error text if errorNr is within errorMsg array bounds
-            } 
+                if (warnNr < warningMsg.Length)
+                {
+                    warningText.text = warningMsg[warnNr] + warningInfo;            //Only change error text if errorNr is within errorMsg array bounds
+                }
+                else if (warningInfo != "")
+                {
+                    warningText.text = warningInfo;                                 //Otherwise set the text to the warningInfo string
+                }
+            }
             else if (warningInfo != "")
             {
                 warningText.text = warningInfo;                                 //Otherwise set the text to the warningInfo string
