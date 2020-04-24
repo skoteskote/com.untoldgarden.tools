@@ -13,17 +13,17 @@ namespace UntoldGarden
     {
         private GameObject errorPanel;
         private Text errorText;
-        private TextAsset errorMessages; // CSV with all error messages
+        private TextAsset errorMessages;
 
         private GameObject warningPanel;
         private Text warningText;
-        private TextAsset warningMessages; // CSV with all error messages
+        private TextAsset warningMessages;
 
         private string[] errorMsg;
         private string[] warningMsg;
 
-        private string baseError = "Sorry, an unknown error occurred.";
-        private string baseWarning = "Warning! Strong winds ahead.";
+        private readonly string baseError = "Sorry, an unknown error occurred.";
+        private readonly string baseWarning = "Warning! Strong winds ahead.";
 
         private bool hasErrorCsv = false;
         private bool hasWarningCsv = false;
@@ -101,13 +101,13 @@ namespace UntoldGarden
             }
         }
 
-        public void Error(int errorNr, string errorInfo = "")                   //Error message is displayed by calling the corresponding error array item
+        public void Error(string errorInfo = "", int? errorNr = null)                   //Error message is displayed by calling the corresponding error array item
         {
-            if (hasErrorCsv)
+            if (errorNr.HasValue && hasErrorCsv)
             {
                 if (errorNr < errorMsg.Length)
                 {
-                    errorText.text = errorMsg[errorNr] + errorInfo;                 //Only change error text if errorNr is within errorMsg array bounds
+                    errorText.text = errorMsg[errorNr.Value] + errorInfo;                 //Only change error text if errorNr is within errorMsg array bounds
                 }
                 else if (errorInfo != "")
                 {
@@ -121,13 +121,13 @@ namespace UntoldGarden
             errorPanel.SetActive(true);
         }
 
-        public void Warning(int warnNr, string warningInfo = "")                //Error message is displayed by calling the corresponding error array item
+        public void Warning(string warningInfo = "", int? warnNr = null)                //Error message is displayed by calling the corresponding error array item
         {
-            if (hasWarningCsv)
+            if (warnNr.HasValue && hasWarningCsv)
             {
                 if (warnNr < warningMsg.Length)
                 {
-                    warningText.text = warningMsg[warnNr] + warningInfo;            //Only change error text if errorNr is within errorMsg array bounds
+                    warningText.text = warningMsg[warnNr.Value] + warningInfo;            //Only change error text if errorNr is within errorMsg array bounds
                 }
                 else if (warningInfo != "")
                 {
