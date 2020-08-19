@@ -1,8 +1,8 @@
 {
-    "name": "com.untoldgarden.debug",
+    "name": "untoldgarden.debug",
     "displayName": "UntoldGarden",
     "version": "1.0.0",
-    "unity": "2019.3",
+    "unity": "2020.1",
     "author": "Untold Garden",
     "description": "Untold Garden Debugging Tools",
     "author": "Untold Garden",
